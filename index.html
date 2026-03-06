@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统信息分析器</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">系统信息分析器</h1>
+            <p class="subtitle">System Information Analyzer</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="card overview-card">
+                <h2 class="card-title">系统概览</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">操作系统</span>
+                        <span class="info-value" id="os">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">浏览器</span>
+                        <span class="info-value" id="browser">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">屏幕分辨率</span>
+                        <span class="info-value" id="resolution">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">语言</span>
+                        <span class="info-value" id="language">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card performance-card">
+                <h2 class="card-title">性能指标</h2>
+                <div class="performance-grid">
+                    <div class="performance-item">
+                        <div class="performance-label">CPU 核心数</div>
+                        <div class="performance-value" id="cpu-cores">-</div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">设备内存</div>
+                        <div class="performance-value" id="memory">-</div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">网络类型</div>
+                        <div class="performance-value" id="network">-</div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">触摸支持</div>
+                        <div class="performance-value" id="touch">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h2 class="card-title">内存使用情况</h2>
+                <div class="chart-container">
+                    <canvas id="memoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h2 class="card-title">屏幕信息</h2>
+                <div class="chart-container">
+                    <canvas id="screenChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card features-card">
+                <h2 class="card-title">浏览器特性</h2>
+                <div class="features-grid">
+                    <div class="feature-item" id="feature-webgl">
+                        <span class="feature-name">WebGL</span>
+                        <span class="feature-status">检测中</span>
+                    </div>
+                    <div class="feature-item" id="feature-webgl2">
+                        <span class="feature-name">WebGL 2.0</span>
+                        <span class="feature-status">检测中</span>
+                    </div>
+                    <div class="feature-item" id="feature-webrtc">
+                        <span class="feature-name">WebRTC</span>
+                        <span class="feature-status">检测中</span>
+                    </div>
+                    <div class="feature-item" id="feature-localstorage">
+                        <span class="feature-name">LocalStorage</span>
+                        <span class="feature-status">检测中</span>
+                    </div>
+                    <div class="feature-item" id="feature-indexeddb">
+                        <span class="feature-name">IndexedDB</span>
+                        <span class="feature-status">检测中</span>
+                    </div>
+                    <div class="feature-item" id="feature-serviceworker">
+                        <span class="feature-name">Service Worker</span>
+                        <span class="feature-status">检测中</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card network-card">
+                <h2 class="card-title">网络信息</h2>
+                <div class="network-info">
+                    <div class="network-item">
+                        <span class="network-label">连接类型</span>
+                        <span class="network-value" id="connection-type">-</span>
+                    </div>
+                    <div class="network-item">
+                        <span class="network-label">有效带宽</span>
+                        <span class="network-value" id="connection-speed">-</span>
+                    </div>
+                    <div class="network-item">
+                        <span class="network-label">往返时间</span>
+                        <span class="network-value" id="connection-rtt">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card battery-card">
+                <h2 class="card-title">电池状态</h2>
+                <div class="battery-info">
+                    <div class="battery-level">
+                        <div class="battery-bar">
+                            <div class="battery-fill" id="battery-fill"></div>
+                        </div>
+                        <span class="battery-percentage" id="battery-percentage">-</span>
+                    </div>
+                    <div class="battery-status">
+                        <span class="battery-status-text" id="battery-status">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card browser-detail-card">
+                <h2 class="card-title">浏览器详细信息</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">浏览器版本</span>
+                        <span class="info-value" id="browser-version">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">渲染引擎</span>
+                        <span class="info-value" id="browser-engine">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Cookie启用</span>
+                        <span class="info-value" id="cookie-enabled">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Do Not Track</span>
+                        <span class="info-value" id="do-not-track">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card location-card">
+                <h2 class="card-title">位置与时区</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">时区</span>
+                        <span class="info-value" id="timezone">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">本地时间</span>
+                        <span class="info-value" id="local-time">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">UTC偏移</span>
+                        <span class="info-value" id="utc-offset">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">地理位置</span>
+                        <span class="info-value" id="location">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card media-card">
+                <h2 class="card-title">媒体设备</h2>
+                <div class="media-grid">
+                    <div class="media-item">
+                        <div class="media-icon">📷</div>
+                        <div class="media-info">
+                            <div class="media-label">摄像头</div>
+                            <div class="media-value" id="camera-count">检测中...</div>
+                        </div>
+                    </div>
+                    <div class="media-item">
+                        <div class="media-icon">🎤</div>
+                        <div class="media-info">
+                            <div class="media-label">麦克风</div>
+                            <div class="media-value" id="microphone-count">检测中...</div>
+                        </div>
+                    </div>
+                    <div class="media-item">
+                        <div class="media-icon">🔊</div>
+                        <div class="media-info">
+                            <div class="media-label">扬声器</div>
+                            <div class="media-value" id="speaker-count">检测中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card storage-card">
+                <h2 class="card-title">存储空间</h2>
+                <div class="chart-container">
+                    <canvas id="storageChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card webgl-card">
+                <h2 class="card-title">WebGL 渲染器信息</h2>
+                <div class="webgl-info">
+                    <div class="webgl-item">
+                        <span class="webgl-label">供应商</span>
+                        <span class="webgl-value" id="webgl-vendor">检测中...</span>
+                    </div>
+                    <div class="webgl-item">
+                        <span class="webgl-label">渲染器</span>
+                        <span class="webgl-value" id="webgl-renderer">检测中...</span>
+                    </div>
+                    <div class="webgl-item">
+                        <span class="webgl-label">版本</span>
+                        <span class="webgl-value" id="webgl-version">检测中...</span>
+                    </div>
+                    <div class="webgl-item">
+                        <span class="webgl-label">着色语言</span>
+                        <span class="webgl-value" id="webgl-shading">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h2 class="card-title">系统性能评分</h2>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card screen-detail-card">
+                <h2 class="card-title">详细屏幕信息</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">像素密度</span>
+                        <span class="info-value" id="pixel-ratio">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">色彩深度</span>
+                        <span class="info-value" id="color-depth">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">屏幕方向</span>
+                        <span class="info-value" id="screen-orientation">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">可用宽度</span>
+                        <span class="info-value" id="available-width">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">可用高度</span>
+                        <span class="info-value" id="available-height">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">窗口宽度</span>
+                        <span class="info-value" id="window-width">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">窗口高度</span>
+                        <span class="info-value" id="window-height">检测中...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">滚动位置</span>
+                        <span class="info-value" id="scroll-position">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card api-card">
+                <h2 class="card-title">浏览器API支持</h2>
+                <div class="api-grid">
+                    <div class="api-item" id="api-clipboard">
+                        <span class="api-name">Clipboard API</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-notification">
+                        <span class="api-name">Notifications</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-geolocation">
+                        <span class="api-name">Geolocation</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-vibration">
+                        <span class="api-name">Vibration</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-bluetooth">
+                        <span class="api-name">Bluetooth</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-usb">
+                        <span class="api-name">WebUSB</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-nfc">
+                        <span class="api-name">WebNFC</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-share">
+                        <span class="api-name">Web Share</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-payment">
+                        <span class="api-name">Payment Request</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-sensor">
+                        <span class="api-name">Generic Sensor</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-webaudio">
+                        <span class="api-name">Web Audio</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                    <div class="api-item" id="api-webspeech">
+                        <span class="api-name">Web Speech</span>
+                        <span class="api-status">检测中</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card useragent-card">
+                <h2 class="card-title">User Agent 解析</h2>
+                <div class="useragent-info">
+                    <div class="useragent-item">
+                        <span class="useragent-label">完整字符串</span>
+                        <span class="useragent-value" id="useragent-full">检测中...</span>
+                    </div>
+                    <div class="useragent-item">
+                        <span class="useragent-label">平台</span>
+                        <span class="useragent-value" id="useragent-platform">检测中...</span>
+                    </div>
+                    <div class="useragent-item">
+                        <span class="useragent-label">架构</span>
+                        <span class="useragent-value" id="useragent-arch">检测中...</span>
+                    </div>
+                    <div class="useragent-item">
+                        <span class="useragent-label">移动设备</span>
+                        <span class="useragent-value" id="useragent-mobile">检测中...</span>
+                    </div>
+                    <div class="useragent-item">
+                        <span class="useragent-label">机器人</span>
+                        <span class="useragent-value" id="useragent-bot">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card sensor-card">
+                <h2 class="card-title">设备传感器</h2>
+                <div class="sensor-grid">
+                    <div class="sensor-item">
+                        <div class="sensor-icon">📱</div>
+                        <div class="sensor-info">
+                            <div class="sensor-label">加速度计</div>
+                            <div class="sensor-value" id="sensor-accelerometer">检测中...</div>
+                        </div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-icon">🧭</div>
+                        <div class="sensor-info">
+                            <div class="sensor-label">陀螺仪</div>
+                            <div class="sensor-value" id="sensor-gyroscope">检测中...</div>
+                        </div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-icon">🌐</div>
+                        <div class="sensor-info">
+                            <div class="sensor-label">磁力计</div>
+                            <div class="sensor-value" id="sensor-magnetometer">检测中...</div>
+                        </div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-icon">💡</div>
+                        <div class="sensor-info">
+                            <div class="sensor-label">环境光</div>
+                            <div class="sensor-value" id="sensor-ambient">检测中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card storage-detail-card">
+                <h2 class="card-title">存储详细信息</h2>
+                <div class="storage-detail-grid">
+                    <div class="storage-detail-item">
+                        <span class="storage-detail-label">LocalStorage</span>
+                        <span class="storage-detail-value" id="storage-local">检测中...</span>
+                    </div>
+                    <div class="storage-detail-item">
+                        <span class="storage-detail-label">SessionStorage</span>
+                        <span class="storage-detail-value" id="storage-session">检测中...</span>
+                    </div>
+                    <div class="storage-detail-item">
+                        <span class="storage-detail-label">IndexedDB</span>
+                        <span class="storage-detail-value" id="storage-indexed">检测中...</span>
+                    </div>
+                    <div class="storage-detail-item">
+                        <span class="storage-detail-label">Cache API</span>
+                        <span class="storage-detail-value" id="storage-cache">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card network-detail-card">
+                <h2 class="card-title">网络详细信息</h2>
+                <div class="network-detail-grid">
+                    <div class="network-detail-item">
+                        <span class="network-detail-label">在线状态</span>
+                        <span class="network-detail-value" id="network-online">检测中...</span>
+                    </div>
+                    <div class="network-detail-item">
+                        <span class="network-detail-label">连接类型</span>
+                        <span class="network-detail-value" id="network-type">检测中...</span>
+                    </div>
+                    <div class="network-detail-item">
+                        <span class="network-detail-label">节省数据模式</span>
+                        <span class="network-detail-value" id="network-saver">检测中...</span>
+                    </div>
+                    <div class="network-detail-item">
+                        <span class="network-detail-label">RTT (往返时间)</span>
+                        <span class="network-detail-value" id="network-rtt">检测中...</span>
+                    </div>
+                    <div class="network-detail-item">
+                        <span class="network-detail-label">下行速度</span>
+                        <span class="network-detail-value" id="network-downlink">检测中...</span>
+                    </div>
+                    <div class="network-detail-item">
+                        <span class="network-detail-label">上行速度</span>
+                        <span class="network-detail-value" id="network-uplink">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card performance-test-card">
+                <h2 class="card-title">性能测试</h2>
+                <div class="performance-test-grid">
+                    <div class="performance-test-item">
+                        <div class="performance-test-label">JavaScript执行</div>
+                        <div class="performance-test-value" id="perf-js">测试中...</div>
+                    </div>
+                    <div class="performance-test-item">
+                        <div class="performance-test-label">DOM操作</div>
+                        <div class="performance-test-value" id="perf-dom">测试中...</div>
+                    </div>
+                    <div class="performance-test-item">
+                        <div class="performance-test-label">Canvas渲染</div>
+                        <div class="performance-test-value" id="perf-canvas">测试中...</div>
+                    </div>
+                    <div class="performance-test-item">
+                        <div class="performance-test-label">综合评分</div>
+                        <div class="performance-test-value" id="perf-total">测试中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>系统信息分析器 v1.0 | 数据仅供参考</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
